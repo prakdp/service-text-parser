@@ -1,7 +1,6 @@
 ### Requirements
 
 * PHP 7.1+
-* PHP PDO
 * Composer
 
 ### Installion
@@ -11,33 +10,34 @@
 composer install
 ```
 
-2. DB connection 
+### Run
 
-`/config/db.php`
-
-3. Execute `/var/init.sql` sql file (if not `sqlite` adapter)
-
-4. Configuring Web Servers
-nginx:
-
+1a. Start as server
 ```
-server {
-    server_name mysite.test;
+php -S localhost:8000 input.php
+```
 
-    root </path/to/project>/public;
+1b. Configure web-server to entry point `input.php`
 
-    index index.php;
+2. Send JSON message (Content-Type: application/json)
 
-    location / {
-        try_files $uri $uri/ /index.php$is_args$args;
-    }
-
-    location ~ \.php$ {
-        include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_pass 127.0.0.1:9000;
-        #fastcgi_pass unix:/run/php/php7.1-fpm.sock;
-        try_files $uri =404;
+Example:
+```json
+{
+    "job": {
+        "text": "Привет, мне на <a href=\"test@test.ru\">test@test.ru</a> пришло приглашение встретиться, попить кофе с <strong>10%</strong> содержанием молока за <i>$5</i>, пойдем вместе!"
+        "methods": [
+            "stripTags", "removeSpaces", "replaceSpacesToEol", "htmlspecialchars", "removeSymbols", "toNumber"
+        ]
     }
 }
+
+```
+
+### Tests
+
+1. Run
+
+```
+./vendor/bin/phpunit
 ```
